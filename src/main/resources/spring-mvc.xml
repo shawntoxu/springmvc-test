@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<beans xmlns="http://www.springframework.org/schema/beans"   
+       xmlns:aop="http://www.springframework.org/schema/aop"   
+       xmlns:context="http://www.springframework.org/schema/context"  
+       xmlns:mvc="http://www.springframework.org/schema/mvc"   
+       xmlns:tx="http://www.springframework.org/schema/tx"   
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"  
+       xmlns:util="http://www.springframework.org/schema/util"  
+       xsi:schemaLocation="http://www.springframework.org/schema/aop
+        http://www.springframework.org/schema/aop/spring-aop-4.0.xsd   
+        http://www.springframework.org/schema/beans   
+        http://www.springframework.org/schema/beans/spring-beans-4.0.xsd   
+        http://www.springframework.org/schema/context   
+        http://www.springframework.org/schema/context/spring-context-4.0.xsd   
+        http://www.springframework.org/schema/mvc  
+        http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd   
+        http://www.springframework.org/schema/tx
+        http://www.springframework.org/schema/tx/spring-tx-4.0.xsd
+        http://www.springframework.org/schema/util
+        http://www.springframework.org/schema/util/spring-util.xsd">       
+<!-- 查找最新的schemaLocation 访问 http://www.springframework.org/schema/ -->
+
+<!-- 在jsonHttpMessageConverter的Bean配置中，有一个supportedMediaTypes属性，在这个属性可以添加了text/html;
+charset=UTF-8这个值，它是为了处理返回的json数据的编码，默认是ISO-88859-1的，如果出现乱码，可以把它设置为UTF-8 -->
+
+<!-- org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter的Bean配置中，我们加入了messageConverters属性，在该属性中我们有配置jsonHttpMessageConverter这个Bean,它就是用来处理json数据转换的 -->
+<!-- 防止@ResponseBody中文乱码 -->
+<bean id="mappingJacksonHttpMessageConverter" class="org.springframework.http.converter.json.MappingJacksonHttpMessageConverter">  
+    <property name="supportedMediaTypes">  
+        <list>  
+            <value>application/json;charset=UTF-8</value>  
+       </list>  
+    </property>
+
+</bean>
+
+    <bean class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter">
+
+        <property name="messageConverters">      
+            <list >      
+                <ref bean="mappingJacksonHttpMessageConverter" />      
+            </list>      
+        </property>
+        
+	     <!-- property name="messageConverters">
+	        <list>
+	            <bean
+	                class="org.springframework.http.converter.StringHttpMessageConverter">
+	                <property name="supportedMediaTypes">
+	                    <list>
+	                        <bean class="org.springframework.http.MediaType">
+	                            <constructor-arg index="0" value="text" />
+	                            <constructor-arg index="1" value="plain" />
+	                            <constructor-arg index="2" value="UTF-8" />
+	                        </bean>
+	                    </list>
+	                </property>
+	            </bean>
+	        </list>
+	    </property-->
+	</bean>
+
+
+
+<!-- 启用MVC注解 -->
+    <mvc:annotation-driven />
+
+    <!-- 静态资源文件，不会被Spring MVC拦截 -->
+    <mvc:resources location="/resources/" mapping="/resources/**"/>
+    
+    <!-- 指定Sping组件扫描的基本包路径 -->
+    <!-- context:component-scan base-package="org.xdemo.example"-->
+    <context:component-scan base-package="com.demo">
+    	<!-- 这里只扫描Controller，不可重复加载Service -->
+    	<context:include-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+    </context:component-scan>
+  		
+  	<!-- JSP视图解析器-->
+    <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">  
+        <property name="prefix" value="/WEB-INF/views/" />  
+        <property name="suffix" value=".jsp" />
+        <property name="order" value="1" />
+    </bean>
+            
+          
+
+</beans>  
