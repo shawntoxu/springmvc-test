@@ -31,7 +31,52 @@ public class UserController {
 	@Autowired
 	private UserService userService ; 
 
-	
+	/**
+	 *  client ajax     
+	 *   
+	 * var sdata = {"name":"test","tel":"13245678","pwd":"pwd"} ;
+      Tajax = function(url){
+       $.ajax({
+                url: url, 
+                type:"POST",
+                dataType:"json",
+                data:JSON.stringify(sdata), 
+                contentType:"application/json",
+                //data:sdata,
+                //async:true,
+                success: function(res){
+                    console.info(res);
+//                   $.each(data.items,function(i,item){
+//
+//                    console.info(item.name);
+//
+//                           if(item.spec.containers != undefined &&  item.spec.containers[0].ports != undefined ){
+//                                $.each(item.spec.containers,function(j,item){
+//                                     $.each(item.ports,function(k,item){
+//                                            cachePort(item.hostPort);
+//                                    });
+//
+//                                });
+//
+//                            }
+//
+//                    });
+
+                },
+                error:function(){
+                    console.info("get some error!") ; 
+                }
+            });
+}
+
+var regurl = "http://localhost:8080/springrestful/user/register";
+var logurl = "http://localhost:8080/springrestful/user/login";
+
+//Tajax(regurl);
+Tajax(logurl);
+	 * 
+	 * 
+*/
 	@RequestMapping(value="register",method=RequestMethod.POST)
 	@ResponseBody 
 	  public Object  register(@RequestBody User user){  
